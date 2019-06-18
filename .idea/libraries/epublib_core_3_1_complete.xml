@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="epublib-core-3.1-complete">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../psiegman-epublib-1fb2c34/epublib-core/target/epublib-core-3.1-complete.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
