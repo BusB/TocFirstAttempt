@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import nl.siegmann.epublib.epub.EpubReader;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.helper.Validate;
@@ -93,6 +95,7 @@ public class Main {
                             String pageNumberID = chapPageElement.id();
                             String numberOnly = pageNumberID.substring(chapPageElement.id().lastIndexOf("e") + 1);
                             link.appendText(Jsoup.parse("&#x2003;").text() + numberOnly);
+                            link.parent().addClass("level1");
                             print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
                         } else {
                             for (Element idElement : elementsWithIds) {
@@ -104,6 +107,8 @@ public class Main {
                                         index--;
                                     } while (!elementsWithIds.get(index).id().contains("page"));
                                     link.appendText(Jsoup.parse("&#x2003;").text() + elementsWithIds.get(index).id().substring(elementsWithIds.get(index).id().lastIndexOf("e") + 1));
+                                    link.parent().addClass("level2");
+
                                     print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
 
                                 }
@@ -120,6 +125,7 @@ public class Main {
                             String pageNumberID = chapPageElement.id();
                             String numberOnly = pageNumberID.substring(chapPageElement.id().lastIndexOf("e") + 1);
                             link.appendText(Jsoup.parse("&#x2003;").text() + numberOnly);
+                            link.parent().addClass("level1");
                             print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
                         } else {
                             for (Element idElement : elementsWithIds) {
@@ -131,6 +137,7 @@ public class Main {
                                         index--;
                                     } while (!elementsWithIds.get(index).id().contains("page"));
                                     link.appendText(Jsoup.parse("&#x2003;").text() + elementsWithIds.get(index).id().substring(elementsWithIds.get(index).id().lastIndexOf("e") + 1));
+                                    link.parent().addClass("level2");
                                     print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
 
                                 }
@@ -140,9 +147,10 @@ public class Main {
                 }
 
 
-                String tocArchive = "C:/Users/bylander/Desktop/New TOC archive from epub 06172019/";
-                final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), (filePath.lastIndexOf(".") + 1)) + "_TOC.html");
-                FileUtils.writeStringToFile(f, toc.outerHtml(), "UTF-8");
+//                archiveAllTags(filePath, toc);
+                archiveSimpleTOC(filePath, toc);
+
+
 
 
 //            print("\nMedia: (%d)", media.size());
@@ -185,6 +193,48 @@ public class Main {
             return s.substring(0, width - 1) + ".";
         else
             return s;
+    }
+
+    private static void archiveAllTags (String filePath, Document toc) throws IOException {
+
+        String tocArchive = "C:/Users/bylander/Desktop/New TOC archive from epub 06172019/";
+        final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), filePath.lastIndexOf(".")) + "_TOC.html");
+        FileUtils.writeStringToFile(f, toc.outerHtml(), "UTF-8");
+
+    }
+
+    private static void archiveSimpleTOC (String filePath, Document toc) throws IOException {
+
+        Elements tocContentsEntries = toc.select("div.contentsEntry*");
+
+        tocContentsEntries.select(".italic").tagName("em");
+        tocContentsEntries.select(".bold").tagName("strong");
+        Elements levelOneEntries =  tocContentsEntries.select(".level1");
+        Elements levelTwoEntries =  tocContentsEntries.select(".level2");
+        for (Element twoE : levelTwoEntries) {
+            twoE.append("<br />");
+        }
+        levelTwoEntries.unwrap();
+        levelOneEntries.tagName("p");
+
+//        Elements allElements = toc.getAllElements();
+//
+//        List<String>  attToRemove = new ArrayList<>();
+//        for (Element entry : allElements) {
+//            Attributes at = entry.attributes();
+//            for (Attribute a : at) {
+//                attToRemove.add(a.getKey());
+//            }
+//
+//            for(String att : attToRemove) {
+//                entry.removeAttr(att);
+//            }
+//        }
+
+        String tocArchive = "C:/Users/bylander/Desktop/New TOC archive from epub 06172019/Txt files/";
+        final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), filePath.lastIndexOf(".")) + "_TOC.txt");
+        FileUtils.writeStringToFile(f, toc.body().child(0).outerHtml(), "UTF-8");
+
     }
 
 //    private boolean notEveryElementHasId() throws IOException {
