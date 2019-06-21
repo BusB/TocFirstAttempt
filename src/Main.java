@@ -94,8 +94,8 @@ public class Main {
                         if (anchorFromTOC.equals(chapNameElement.id())) {
                             String pageNumberID = chapPageElement.id();
                             String numberOnly = pageNumberID.substring(chapPageElement.id().lastIndexOf("e") + 1);
-                            link.appendText(Jsoup.parse("&#x2003;").text() + numberOnly);
                             link.parent().addClass("level1");
+                            link.appendText(Jsoup.parse("&#x2003;").text() + numberOnly);
                             print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
                         } else {
                             for (Element idElement : elementsWithIds) {
@@ -106,9 +106,10 @@ public class Main {
                                     do {
                                         index--;
                                     } while (!elementsWithIds.get(index).id().contains("page"));
-                                    link.appendText(Jsoup.parse("&#x2003;").text() + elementsWithIds.get(index).id().substring(elementsWithIds.get(index).id().lastIndexOf("e") + 1));
+                                    Element bobo = link.parent();
                                     link.parent().addClass("level2");
-
+                                    dodo = "dada";
+                                    link.appendText(Jsoup.parse("&#x2003;").text() + elementsWithIds.get(index).id().substring(elementsWithIds.get(index).id().lastIndexOf("e") + 1));
                                     print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
 
                                 }
@@ -124,8 +125,8 @@ public class Main {
                         if (anchorFromTOC.equals(chapNameElement.id())) {
                             String pageNumberID = chapPageElement.id();
                             String numberOnly = pageNumberID.substring(chapPageElement.id().lastIndexOf("e") + 1);
-                            link.appendText(Jsoup.parse("&#x2003;").text() + numberOnly);
                             link.parent().addClass("level1");
+                            link.appendText(Jsoup.parse("&#x2003;").text() + numberOnly);
                             print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
                         } else {
                             for (Element idElement : elementsWithIds) {
@@ -136,8 +137,10 @@ public class Main {
                                     do {
                                         index--;
                                     } while (!elementsWithIds.get(index).id().contains("page"));
-                                    link.appendText(Jsoup.parse("&#x2003;").text() + elementsWithIds.get(index).id().substring(elementsWithIds.get(index).id().lastIndexOf("e") + 1));
+                                    Element bobo = link.parent();
                                     link.parent().addClass("level2");
+                                    dodo = "dada";
+                                    link.appendText(Jsoup.parse("&#x2003;").text() + elementsWithIds.get(index).id().substring(elementsWithIds.get(index).id().lastIndexOf("e") + 1));
                                     print(" * a: <%s> <%s>  %s", link.id(), link.attr("href"), link.text());
 
                                 }
@@ -205,20 +208,20 @@ public class Main {
 
     private static void archiveSimpleTOC (String filePath, Document toc) throws IOException {
 
-        Elements tocContentsEntries = toc.select("div.contentsEntry*");
+        Elements tocContentsEntries = toc.getAllElements();
 
         tocContentsEntries.select(".italic").tagName("em");
         tocContentsEntries.select(".bold").tagName("strong");
         Elements levelOneEntries =  tocContentsEntries.select(".level1");
         Elements levelTwoEntries =  tocContentsEntries.select(".level2");
-        for (Element twoE : levelTwoEntries) {
-            twoE.append("<br />");
-        }
-        levelTwoEntries.unwrap();
-        levelOneEntries.tagName("p");
+//        for (Element twoE : levelTwoEntries) {
+//            twoE.append("<br />");
+//        }
+//        levelTwoEntries.unwrap();
+//        levelOneEntries.tagName("p");
 
-//        Elements allElements = toc.getAllElements();
-//
+        Elements allElements = toc.getAllElements();
+
 //        List<String>  attToRemove = new ArrayList<>();
 //        for (Element entry : allElements) {
 //            Attributes at = entry.attributes();
@@ -228,8 +231,10 @@ public class Main {
 //
 //            for(String att : attToRemove) {
 //                entry.removeAttr(att);
+//                String dod = "dad";
 //            }
 //        }
+
 
         String tocArchive = "C:/Users/bylander/Desktop/New TOC archive from epub 06172019/Txt files/";
         final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), filePath.lastIndexOf(".")) + "_TOC.txt");
