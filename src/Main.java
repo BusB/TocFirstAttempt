@@ -47,11 +47,9 @@ public class Main {
 
         for (String filePath : filePaths) {
 
-
             Book book = epubReader.readEpub(new FileInputStream(filePath));
 
             Document toc = new Document("www.example.com");
-
 
             Resources resources = book.getResources();
 
@@ -66,14 +64,9 @@ public class Main {
 
             Elements tocEntries = toc.select("a[href]");
 
-
             for (Resource resource : htmlFiles) {
                 InputStream htmlInput = resource.getInputStream();
                 Document doc = Jsoup.parse(htmlInput, "UTF-8", "www.example.com");
-
-
-//        File input = new File("C:/Users/bylander/Desktop/TOC_pull_WORK/new_unzipped_final_epubs/9780807770115/OEBPS/talkingtheirwayintoscience_con01.html");
-//        Document doc = Jsoup.parse(input, "UTF-8");
 
                 Elements elementsWithIds = doc.select("*[id]");
                 Elements links = doc.select("a");
@@ -149,44 +142,13 @@ public class Main {
                     }
                 }
 
-
-//                archiveAllTags(filePath, toc);
-                archiveSimpleTOC(filePath, toc);
-
-
-
-
-//            print("\nMedia: (%d)", media.size());
-//            for (Element src : media) {
-//                if (src.tagName().equals("img"))
-//                    print(" * %s: <%s> %sx%s (%s)",
-//                            src.tagName(), src.attr("abs:src"), src.attr("width"), src.attr("height"),
-//                            trim(src.attr("alt"), 20));
-//                else
-//                    print(" * %s: <%s>", src.tagName(), src.attr("abs:src"));
-//            }
-//
-//            print("\nImports: (%d)", imports.size());
-//            for (Element link : imports) {
-//                print(" * %s <%s> (%s)", link.tagName(), link.attr("abs:href"), link.attr("rel"));
-//            }
-//
-//            print("\nLinks: (%d)", links.size());
-//            for (Element link : links) {
-//                print(" * a: <%s> <%s>  (%s)", link.id(), link.attr("href"), trim(link.text(), 35));
-//            }
-
-
-
-
-
             }
 
-
+            archiveAllTags(filePath, toc);
+            archiveSimpleTOC(filePath, toc);
         }
     }
-
-
+    
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }
@@ -198,7 +160,7 @@ public class Main {
             return s;
     }
 
-    private static void archiveAllTags (String filePath, Document toc) throws IOException {
+    private static void archiveAllTags(String filePath, Document toc) throws IOException {
 
         String tocArchive = "C:/Users/bylander/Desktop/New TOC archive from epub 06172019/";
         final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), filePath.lastIndexOf(".")) + "_TOC.html");
@@ -206,60 +168,39 @@ public class Main {
 
     }
 
-    private static void archiveSimpleTOC (String filePath, Document toc) throws IOException {
-
-        Elements tocContentsEntries = toc.getAllElements();
-
-        tocContentsEntries.select(".italic").tagName("em");
-        tocContentsEntries.select(".bold").tagName("strong");
-        Elements levelOneEntries =  tocContentsEntries.select(".level1");
-        Elements levelTwoEntries =  tocContentsEntries.select(".level2");
-//        for (Element twoE : levelTwoEntries) {
-//            twoE.append("<br />");
-//        }
-//        levelTwoEntries.unwrap();
-//        levelOneEntries.tagName("p");
+    private static void archiveSimpleTOC(String filePath, Document toc) throws IOException {
 
         Elements allElements = toc.getAllElements();
 
-//        List<String>  attToRemove = new ArrayList<>();
-//        for (Element entry : allElements) {
-//            Attributes at = entry.attributes();
-//            for (Attribute a : at) {
-//                attToRemove.add(a.getKey());
-//            }
-//
-//            for(String att : attToRemove) {
-//                entry.removeAttr(att);
-//                String dod = "dad";
-//            }
-//        }
+        allElements.select(".italic").tagName("em");
+        allElements.select(".bold").tagName("strong");
+        Elements levelOneEntries = allElements.select(".level1");
+        Elements levelTwoEntries = allElements.select(".level2");
+        for (Element twoE : levelTwoEntries) {
+            twoE.append("<br />");
+        }
+        levelTwoEntries.unwrap();
+        levelOneEntries.tagName("p");
 
+        List<String> attToRemove = new ArrayList<>();
+        for (Element entry : allElements) {
+            Attributes at = entry.attributes();
+            for (Attribute a : at) {
+                attToRemove.add(a.getKey());
+            }
+
+            for (String att : attToRemove) {
+                entry.removeAttr(att);
+            }
+
+        }
 
         String tocArchive = "C:/Users/bylander/Desktop/New TOC archive from epub 06172019/Txt files/";
-        final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), filePath.lastIndexOf(".")) + "_TOC.txt");
+        final File f = new File(tocArchive + filePath.substring((filePath.lastIndexOf("/") + 1), filePath.lastIndexOf(".")) + "_TOC.html");
         FileUtils.writeStringToFile(f, toc.body().child(0).outerHtml(), "UTF-8");
 
     }
 
-//    private boolean notEveryElementHasId() throws IOException {
-//        for (Resource resource : resources) {
-//            document = Jsoup.parse(contentBuilder.getStringFromInputStream(resource.getInputStream()));
-//            if (!document.getAllElements().isEmpty()) {
-//                Elements allElements = document.getAllElements();
-//                if (getFirstIdElement(allElements) != null) {
-//                    Element firstIdElement = getFirstIdElement(allElements);
-//                    for (int i = allElements.indexOf(firstIdElement); i < allElements.size(); i++) {
-//
-//                        if (!allElements.get(i).hasAttr(Constants.ID)) {
-//                            return true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
 }
 
 
